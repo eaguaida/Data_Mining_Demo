@@ -13,7 +13,8 @@ from sklearn.metrics import  precision_recall_fscore_support, accuracy_score, co
 # data_file will be populated with a string 
 # corresponding to a path to the adult.csv file.
 def read_csv_1(data_file):
-	df = pd.read_csv(date_file_path ,delimiter=',')
+	df = pd.read_csv(data_file ,delimiter=',')
+	df = df.drop(columns=['fnlwgt'], errors='ignore')
 	return df
 
 # Return the number of rows in the pandas dataframe df.
@@ -85,22 +86,21 @@ def label_encoding(df):
 # and labels y_train for the training instances,
 # build a decision tree and use it to predict labels for X_train. 
 # Return a pandas series with the predicted values. 
-def dt_predict(X_train,y_train):
-	# Create a decision tree classifier and fit it to the training data
-	dt = DecisionTreeClassifier(random_state=0)
-	dt.fit(X_train, y_train)
-	# Use the trained classifier to predict the labels of the training data
-	y_pred = dt.predict(X_train)
-	# Convert the array back to a pandas series
-	return pd.Series(y_pred, name='class', index=y_train.index)
+def dt_predict(X_train, X_test, y_train):
+    print("Starting to train the Decision Tree classifier...")
+    # Create a decision tree classifier and fit it to the training data
+    dt = DecisionTreeClassifier(random_state=0)
+    dt.fit(X_train, y_train)
+    print("Finished training. Now making predictions...")
+    # Use the trained classifier to predict the labels of the training data
+    y_pred = dt.predict(X_test)
+    print("Predictions complete.")
+    # No need to convert to a pandas series, since we're not doing any manipulation that requires index
+    return y_pred
 
-# Given a pandas series y_pred with the predicted labels and a pandas series y_true with the true labels,
-# compute the error rate of the classifier that produced y_pred.  
+
 def dt_error_rate(y_pred, y_true):
-	print(f'Accuracy:{accuracy_score(y_true, y_pred)* 100:.2f}%')
-	training_error_rate = 1 - accuracy_score(y_true, y_pred)
-	print(f'Training error rate: {training_error_rate * 100:.2f}%') 
-	pass
-
-
-
+		print(f'Accuracy:{accuracy_score(y_true, y_pred)* 100:.2f}%')
+		training_error_rate = 1 - accuracy_score(y_true, y_pred)
+		print(f'Training error rate: {training_error_rate * 100:.2f}%') 
+		return training_error_rate
