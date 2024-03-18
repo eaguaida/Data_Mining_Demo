@@ -86,19 +86,20 @@ def label_encoding(df):
 # and labels y_train for the training instances,
 # build a decision tree and use it to predict labels for X_train. 
 # Return a pandas series with the predicted values. 
-def dt_predict(X_train, X_test, y_train):
+def dt_predict(X_train, y_train):
     print("Starting to train the Decision Tree classifier...")
     # Create a decision tree classifier and fit it to the training data
     dt = DecisionTreeClassifier(random_state=0)
     dt.fit(X_train, y_train)
     print("Finished training. Now making predictions...")
     # Use the trained classifier to predict the labels of the training data
-    y_pred = dt.predict(X_test)
+    y_pred = dt.predict(X_train)
     print("Predictions complete.")
     # No need to convert to a pandas series, since we're not doing any manipulation that requires index
     return y_pred
 
-
+# Given a pandas series y_pred with the predicted labels and a pandas series y_true with the true labels,
+# compute the error rate of the classifier that produced y_pred.  
 def dt_error_rate(y_pred, y_true):
 		print(f'Accuracy:{accuracy_score(y_true, y_pred)* 100:.2f}%')
 		training_error_rate = 1 - accuracy_score(y_true, y_pred)
